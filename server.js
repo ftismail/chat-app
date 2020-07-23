@@ -5,7 +5,7 @@ const http = require('http');
 const path = require('path');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages')
-const {userJoin,getCurrentUser} = require('./utils/users');
+const {userJoin,getCurrentUser,userLeave,getRoomUsers} = require('./utils/users');
 ///require end////
 dotenv.config()
 const app = express()
@@ -31,8 +31,12 @@ io.on('connection',socket=>{
     })
     ///run when client disconnected//
     socket.on('disconnect',()=>{
-        io.emit('message',formatMessage('admin','the user has left the chat'))
+        const user = userLeave(socket.id)
+        if (user) {
+            io.to(user.room).emit('message',formatMessage('admin',`${user.username} has left the chat`))
+        }
+        
     })
 })
 
-server.listen(process.env.PORT, () => console.log(`Example app listening on port port!`))
+server.listen(3000, () => console.log(`Example app listening on port port!`))
