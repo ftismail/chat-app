@@ -43,4 +43,4 @@ io.on('connection',socket=>{
     })
 })
 
-server.listen(3000, () => console.log(`Example app listening on port port!`))
+server.listen(process.env.PORT, () => console.log(`Example app listening on port port!`))
