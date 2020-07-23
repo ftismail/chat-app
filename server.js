@@ -21,7 +21,9 @@ io.on('connection',socket=>{
         ///welcom corrent user///
         socket.emit('message',formatMessage('admine','welcom'))
         ///Brodcast when a user login//
-        socket.broadcast.to(user.room).emit('message',formatMessage('admine',`<h1>${user.username}</h1> has joined` ))
+        socket.broadcast.to(user.room).emit('message',formatMessage('admine',`<span class='user'>"${user.username}"</span> => has joined` ))
+        ///send user and room info 
+        io.to(user.room).emit('roomUsers',{room:user.room,users:getRoomUsers(user.room)})
     })
     /// liste, to the chat messages////
     socket.on('chatMessage',(msg)=>{
@@ -33,7 +35,9 @@ io.on('connection',socket=>{
     socket.on('disconnect',()=>{
         const user = userLeave(socket.id)
         if (user) {
-            io.to(user.room).emit('message',formatMessage('admin',`${user.username} has left the chat`))
+            io.to(user.room).emit('message',formatMessage('admin',`<span class='user'>${user.username}</span> has left the chat`))
+            ///send user and room info 
+        io.to(user.room).emit('roomUsers',{room:user.room,users:getRoomUsers(user.room)})
         }
         
     })
